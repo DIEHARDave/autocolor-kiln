@@ -1,4 +1,4 @@
-"""Unit tests for extras/kiln_autocolor.py with stand-ins for Klipper and
+"""Unit tests for extras/autocolor_kiln.py with stand-ins for Klipper and
 Kiln's IFS. Run from the repository root: python3 -m unittest discover tests
 """
 import importlib.util
@@ -9,7 +9,7 @@ import unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SPEC = importlib.util.spec_from_file_location(
-    "kiln_autocolor", os.path.join(HERE, "..", "extras", "kiln_autocolor.py"))
+    "autocolor_kiln", os.path.join(HERE, "..", "extras", "autocolor_kiln.py"))
 ac = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(ac)
 
@@ -167,6 +167,9 @@ class FakeConfig:
 
     def get_printer(self):
         return self.printer
+
+    def has_section(self, name):
+        return False
 
     def getboolean(self, name, default):
         return self.opts.get(name, default)

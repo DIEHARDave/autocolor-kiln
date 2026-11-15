@@ -57,7 +57,7 @@ Then in the console:
 ENABLE_PLUGIN NAME=autocolor
 ```
 
-Klipper restarts. Updates show up in Mainsail / Fluidd's Software Updates (`kiln-autocolor`) after Moonraker's next restart.
+Klipper restarts. Updates show up in Mainsail / Fluidd's Software Updates (`autocolor-kiln`) after Moonraker's next restart.
 
 After a manual `git pull`, restart the Klipper service (`/etc/init.d/S61klipper restart` as root, or reboot). `FIRMWARE_RESTART` and `RESTART` keep the already-loaded Python module, so the old code keeps running. Updating from Software Updates restarts the service itself.
 
@@ -68,11 +68,23 @@ After a manual `git pull`, restart the Klipper service (`/etc/init.d/S61klipper 
 | `AUTOCOLOR [FILENAME=] [APPLY=1]` | Show the slots it would pick for a file (default: the last print). `APPLY=1` sets the map now, for the next print. |
 | `AUTOCOLOR_ENABLE ENABLE=1\|0` | Switch mapping at print start on or off (kept in save_variables). Without `ENABLE`: show the state. |
 
-`printer.kiln_autocolor` has `enabled` and `last` (file, map, rows, problems) of the last print start.
+`printer.autocolor_kiln` has `enabled` and `last` (file, map, rows, problems) of the last print start.
 
 ## Options
 
-Add a `[kiln_autocolor]` section to `local.cfg`; see [plugin.cfg](plugin.cfg) for all options and their defaults (`enabled`, `respect_manual_map`, `reset_at_end`, `stop_on_mismatch`, `family_penalty`, `share_penalty`).
+Add an `[autocolor_kiln]` section to `local.cfg`; see [plugin.cfg](plugin.cfg) for all options and their defaults (`enabled`, `respect_manual_map`, `reset_at_end`, `stop_on_mismatch`, `family_penalty`, `share_penalty`).
+
+## Renamed for Kiln OS 1.0
+
+Since v0.1.0-rc1, Kiln OS keeps names that start with `kiln_` or
+`ad5x_` for itself and refuses plugins that use them. This plugin's
+Klipper section and status object are now `autocolor_kiln` (was `kiln_autocolor`),
+and its Software Updates entry is `autocolor-kiln` (was `kiln-autocolor`).
+
+A `[kiln_autocolor]` section of your own in `local.cfg` still works: its
+options are used for `[autocolor_kiln]`, with a warning in Fluidd/Mainsail to
+rename it. Macros or dashboards that read `printer.kiln_autocolor` need
+`printer.autocolor_kiln`.
 
 ## Tests
 

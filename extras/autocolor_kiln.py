@@ -1,5 +1,5 @@
 # Map the slicer's tools to the IFS slots by color and material when a print
-# starts, as zMod's auto color selection does ([kiln_autocolor])
+# starts, as zMod's auto color selection does ([autocolor_kiln])
 #
 # Kiln OS loads a plugin's extras/*.py while the plugin is enabled.
 #
@@ -291,7 +291,7 @@ class KilnAutoColor:
                 self.enabled = bool(saved)
         self.sdcard = self.printer.lookup_object('virtual_sdcard', None)
         if self.sdcard is None:
-            LOGGER.info("kiln_autocolor: no [virtual_sdcard], not wrapping "
+            LOGGER.info("autocolor_kiln: no [virtual_sdcard], not wrapping "
                         "SDCARD_PRINT_FILE")
             return
         self.print_file = self.gcode.register_command("SDCARD_PRINT_FILE",
@@ -327,7 +327,7 @@ class KilnAutoColor:
                    for t in TOOLS):
                 self.gcode.run_script("IFS_MAP_TOOL RESET=1")
         except Exception:
-            LOGGER.exception("kiln_autocolor: tool map reset failed")
+            LOGGER.exception("autocolor_kiln: tool map reset failed")
 
     # Printer state
     def _ifs(self):
@@ -443,7 +443,7 @@ class KilnAutoColor:
             except self.printer.command_error:
                 raise
             except Exception as e:
-                LOGGER.exception("kiln_autocolor: auto mapping failed")
+                LOGGER.exception("autocolor_kiln: auto mapping failed")
                 gcmd.respond_info("AutoColor: failed (%s), printing with the "
                                   "current tool map" % (e,))
         self.print_file(gcmd)
@@ -497,5 +497,26 @@ class KilnAutoColor:
         return {'enabled': self.enabled, 'last': self.last}
 
 
+def adopt_legacy_section(config, old):
+    """Options from a section of the name before the rename (Kiln OS 1.0
+    keeps kiln_ names for itself), so a user's own [kiln_autocolor] in local.cfg
+    still applies instead of stopping Klipper with an unknown section."""
+    if not config.has_section(old):
+        return
+    fc = config.fileconfig
+    new = config.get_name()
+    legacy = config.getsection(old)
+    for opt in fc.options(old):
+        fc.set(new, opt, fc.get(old, opt))
+        legacy.get(opt)  # marks the old option as used
+    msg = "[%s] is now [%s]: rename the section in your config" % (old, new)
+    logging.warning(msg)
+    try:
+        config.get_printer().lookup_object('configfile').runtime_warning(msg)
+    except Exception:
+        pass
+
+
 def load_config(config):
+    adopt_legacy_section(config, 'kiln_autocolor')
     return KilnAutoColor(config)
