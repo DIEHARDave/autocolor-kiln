@@ -47,7 +47,7 @@ Problems (a material that isn't loaded, T4 or higher) are reported with `!!`; wi
 On the printer, as root:
 
 ```sh
-git clone https://github.com/DIEHARDave/KILN_AutoColor.git /data/ad5x/plugins/autocolor
+git clone https://github.com/DIEHARDave/autocolor-kiln.git /data/ad5x/plugins/autocolor
 chown -R klipper:klipper /data/ad5x/plugins/autocolor
 ```
 
@@ -75,6 +75,10 @@ After a manual `git pull`, restart the Klipper service (`/etc/init.d/S61klipper 
 Add an `[autocolor_kiln]` section to `local.cfg`; see [plugin.cfg](plugin.cfg) for all options and their defaults (`enabled`, `respect_manual_map`, `reset_at_end`, `stop_on_mismatch`, `family_penalty`, `share_penalty`).
 
 ## Renamed for Kiln OS 1.0
+
+This repository was `KILN_AutoColor` until 2026-11-15; old links and clones keep
+working (GitHub redirects them), and Moonraker switches an installed
+copy to the new address by itself at its next update check.
 
 Since v0.1.0-rc1, Kiln OS keeps names that start with `kiln_` or
 `ad5x_` for itself and refuses plugins that use them. This plugin's
