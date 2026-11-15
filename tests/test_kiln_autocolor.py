@@ -168,8 +168,10 @@ class FakeConfig:
     def get_printer(self):
         return self.printer
 
-    def has_section(self, name):
-        return False
+    class fileconfig:
+        @staticmethod
+        def sections():
+            return []
 
     def getboolean(self, name, default):
         return self.opts.get(name, default)
